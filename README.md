@@ -1,4 +1,4 @@
-r-dev container
-===============
+cfin-dev container
+=================
 
-Contains images recipe for R development 
+Container for cfin (mostly R) development

@@ -3,10 +3,8 @@ RUN apt-get update && \
       apt-get -y upgrade
 
 # installs the exact version of the production systems.
-RUN mkdir -p /deleteme
-COPY install_prod_deps.sh /deleteme
-RUN chmod u+x /delete/install_prod_deps.sh && /deleteme/install_prod_deps.sh && rm -rf /deleteme
-
+COPY install_prod_deps.sh /install_prod_deps.sh
+RUN bash /install_prod_deps.sh && rm -rf /install_prod_deps.sh
 VOLUME /home/pkg
 WORKDIR /home/pkg
 

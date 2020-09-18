@@ -6,6 +6,8 @@ jobs:
       VERSION: 3.5.3
     docker:
       - image: circleci/buildpack-deps:stretch
+    context:
+      - cfin
     steps:
       - checkout
       - setup_remote_docker

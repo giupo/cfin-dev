@@ -3,7 +3,7 @@ jobs:
   publish:
     environment:
       IMAGE_NAME: giupo/cfin-dev
-      VERSION: 0.0.1
+      VERSION: 0.0.2
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:

@@ -1,44 +1,9 @@
 version: 2.1
 jobs:
-  build:
-    working_directory: ~/main
-    docker:
-      - image: giupo/r-dev:3.5.3
-    steps:
-      - checkout
-      - run: apt-get update -yyq && apt-get upgrade -yyq
-      - run: apt-get install -yyq libpq-dev unixodbc-dev
-      - restore_cache:
-          keys:
-            - deps1-{{ .Branch }}-{{ checksum "DESCRIPTION" }}
-            - deps1-{{ .Branch }}
-            - deps1-
-
-      - run:
-          name: renv
-          command: |
-            R -e 'renv::restore()'
-
-      - save_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "DESCRIPTION" }}
-          paths:
-            - "~/main/rcf/renv"
-            - "~/.local/share/renv"
-      - run:
-          name: check
-          command: |
-            R -e 'install.packages("devtools")'
-            R -e 'devtools::install_github("giupo/GrafoDB")'
-            R -e 'devtools::check(cran=FALSE, error_on="error")'
-
-      - store_artifacts:
-          path: man/
-          destination: man
-
   publish:
     environment:
-      IMAGE_NAME: giupo/rcf
-      VERSION: 1.47.20
+      IMAGE_NAME: giupo/cfin-dev
+      VERSION: 3.5.3
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
@@ -56,54 +21,11 @@ jobs:
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
             docker push $IMAGE_NAME:$VERSION
-  test:
-    working_directory: ~/main
-    docker:
-      - image: giupo/r-dev:3.5.3
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - deps1-{{ .Branch }}-{{ checksum "DESCRIPTION" }}
-            - deps1-{{ .Branch }}
-            - deps1-
-      - run:
-          name: renv
-          command: |
-            R -e 'renv::restore()'
-
-      - run:
-          name: tests
-          command: |
-            mkdir -p reports
-            R -e 'options(testthat.output_file="reports/junit.xml"); devtools::test(reporter="junit")'
-          when: always
-      - store_test_results:
-          path: reports
-      - store_artifacts:
-          path: reports
-
-      - run:
-          name: coverage
-          command: |
-             make coverage
-
         
-
 workflows:
   version: 2
   build-master:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: master
-      - test:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
       - publish:
           requires:
             - build

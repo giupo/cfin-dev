@@ -4,7 +4,6 @@ repos <- "https://cran.rstudio.com"
 
 # yes I know I could have build a cycle, but the following is the product
 # if a script itself over the installed packages: so gimme a break.
-devtools::install_version("acid", version = "1.1", repos = repos)
 devtools::install_version("alpaca", version = "0.3.2", repos = repos)
 devtools::install_version("assertthat", version = "0.2.1", repos = repos)
 devtools::install_version("backports", version = "1.1.5", repos = repos)

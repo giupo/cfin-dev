@@ -6,8 +6,6 @@ jobs:
       VERSION: 3.5.3
     docker:
       - image: circleci/buildpack-deps:stretch
-    context:
-      - cfin
     steps:
       - checkout
       - setup_remote_docker
@@ -29,6 +27,8 @@ workflows:
   build-master:
     jobs:
       - publish:
+          context:
+            - cfin
           filters:
             branches:
               only: master
